@@ -7,14 +7,13 @@ const SCOPES = "user-top-read";
 export default function Home() {
   const [accessToken, setAccessToken] = useState("");
   const [topTracks, setTopTracks] = useState([]);
+  const [topArtists, setTopArtists] = useState([]);
+  const [genres, setGenres] = useState([]);
 
-  // Handle OAuth redirect
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    if (code) {
-      exchangeCodeForToken(code);
-    }
+    if (code) exchangeCodeForToken(code);
   }, []);
 
   const handleConnectSpotify = () => {
@@ -34,11 +33,11 @@ export default function Home() {
       const data = await res.json();
       setAccessToken(data.access_token);
 
-      // Clear URL
       window.history.replaceState({}, "", "/");
 
-      // Immediately fetch top tracks
+      // Fetch tracks and artists immediately
       fetchTopTracks(data.access_token);
+      fetchTopArtists(data.access_token);
     } catch (err) {
       console.error("Error fetching Spotify token", err);
     }
@@ -56,20 +55,82 @@ export default function Home() {
     }
   };
 
+  const fetchTopArtists = async (token = accessToken) => {
+    try {
+      const res = await fetch("http://127.0.0.1:5000/api/spotify/top-artists", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setTopArtists(data.items || []);
+
+      // Extract genres
+      const allGenres = data.items.flatMap((artist) => artist.genres);
+      setGenres([...new Set(allGenres)]); // unique genres
+    } catch (err) {
+      console.error("Error fetching top artists", err);
+    }
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       {!accessToken ? (
         <button onClick={handleConnectSpotify}>Connect Spotify</button>
       ) : (
         <>
-          <h2>Your Top Tracks</h2>
-          <ul style={{ marginTop: "20px" }}>
+          <h2>Top Tracks</h2>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
             {topTracks.map((track) => (
-              <li key={track.id}>
-                {track.name} — {track.artists.map((a) => a.name).join(", ")}
-              </li>
+              <div
+                key={track.id}
+                style={{
+                  width: "200px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                  padding: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <img
+                  src={track.album.images[0]?.url}
+                  alt={track.name}
+                  style={{ width: "100%", borderRadius: "4px" }}
+                />
+                <p style={{ margin: "5px 0", fontWeight: "bold" }}>{track.name}</p>
+                <p style={{ margin: 0 }}>{track.artists.map((a) => a.name).join(", ")}</p>
+              </div>
             ))}
-          </ul>
+          </div>
+
+          <h2 style={{ marginTop: "30px" }}>Top Artists</h2>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            {topArtists.map((artist) => (
+              <div
+                key={artist.id}
+                style={{
+                  width: "200px",
+                  border: "1px solid #ccc",
+                  borderRadius: "8px",
+                  padding: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <img
+                  src={artist.images[0]?.url}
+                  alt={artist.name}
+                  style={{ width: "100%", borderRadius: "4px" }}
+                />
+                <p style={{ margin: "5px 0", fontWeight: "bold" }}>{artist.name}</p>
+                <p style={{ margin: 0 }}>{artist.genres.join(", ")}</p>
+              </div>
+            ))}
+          </div>
+
+          {genres.length > 0 && (
+            <>
+              <h2 style={{ marginTop: "30px" }}>Genres</h2>
+              <p>{genres.join(", ")}</p>
+            </>
+          )}
         </>
       )}
     </div>

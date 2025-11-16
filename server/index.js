@@ -65,4 +65,26 @@ app.get("/api/spotify/top-tracks", async (req, res) => {
   }
 });
 
+app.get("/api/spotify/top-artists", async (req, res) => {
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  if (!accessToken) return res.status(400).json({ message: "Missing access token" });
+
+  try {
+    const response = await fetch("https://api.spotify.com/v1/me/top/artists?limit=10", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    const text = await response.text();
+    try {
+      const data = JSON.parse(text);
+      res.json(data);
+    } catch (parseErr) {
+      res.status(500).json({ message: "Invalid JSON from Spotify", raw: text });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch top artists", error: err });
+  }
+});
+
+
 app.listen(PORT, () => console.log(`Server running on http://127.0.0.1:${PORT}`));
