@@ -1,0 +1,150 @@
+/* Wrapper and card (unchanged) */
+.app-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e0f2ff, #f0f4f8);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 450px;
+  padding: 40px 30px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+
+.link-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  align-items: center;
+}
+
+/* Input group with floating label */
+.input-group {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 16px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #f7f7f7;
+  color: #111;
+  outline: none;
+}
+
+.input-group input:focus {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Floating label styling */
+.input-group label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #f7f7f7;
+  border-radius: 6px;
+  padding: 0 6px;
+  color: #999;
+  font-size: 16px;
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+/* Spotify field styles */
+.input-group.spotify input:focus {
+  border-color: #1DB954;
+  box-shadow: 0 0 8px rgba(29, 185, 84, 0.3);
+}
+
+.input-group.spotify input:focus + label,
+.input-group.spotify.filled label {
+  top: -8px;
+  left: 10px;
+  font-size: 12px;
+  color: #1DB954;
+  background: #ffffff;
+}
+
+/* Apple Music field styles */
+.input-group.apple input:focus {
+  border-color: #FA2D55;
+  box-shadow: 0 0 8px rgba(250, 45, 85, 0.3);
+}
+
+.input-group.apple input:focus + label,
+.input-group.apple.filled label {
+  top: -8px;
+  left: 10px;
+  font-size: 12px;
+  color: #FA2D55;
+  background: #ffffff;
+}
+
+/* Button */
+button {
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 10px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background-color: #45a049;
+  transform: scale(1.03);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Success message */
+.success-message {
+  margin-top: 15px;
+  color: #4caf50;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+.success-message.show {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .app-container {
+    padding: 30px 20px;
+  }
+  h1 {
+    font-size: 24px;
+  }
+}
